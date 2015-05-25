@@ -1,4 +1,8 @@
-/* Send a message to the OSC server.
+/* osc.gml
+ * by hryx 2015
+ * Public Domain
+ *
+ * Send a message to the OSC server.
  * osc_init() must have been called already or this will fail.
  * Pattern argument is required and errs if missing.
  * Function returns if optional parameters are malformed.

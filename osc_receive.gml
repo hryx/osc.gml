@@ -1,4 +1,8 @@
-/* OSC event callback.
+/* osc.gml
+ * by hryx 2015
+ * Public Domain
+ *
+ * OSC event callback.
  * Parses incoming OSC packets and returns an array: Address pattern and args.
  * An integer (false or a negative number) is returned upon error.
  * Each OSC message will be a list containing an address pattern and

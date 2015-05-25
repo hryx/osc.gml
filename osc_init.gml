@@ -1,4 +1,8 @@
-/* Initialize OSC settings.
+/* osc.gml
+ * by hryx 2015
+ * Public Domain
+ *
+ * Initialize OSC settings.
  * This must be called before any other OSC functions.
  * Usage:
  *   osc_init("127.0.0.1", 8140, 8142);
