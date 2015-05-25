@@ -76,20 +76,20 @@ if (is_array(oscargs)) {
 }
 
 // All OK; clear the the buffer and prepare to write message
-buffer_seek(osc_buf, buffer_seek_start, 0);
-buffer_fill(osc_buf, 0, buffer_u8, $0, buffer_get_size(osc_buf));
-buffer_seek(osc_buf, buffer_seek_start, 0);
+buffer_seek(osc_send_buf, buffer_seek_start, 0);
+buffer_fill(osc_send_buf, 0, buffer_u8, $0, buffer_get_size(osc_send_buf));
+buffer_seek(osc_send_buf, buffer_seek_start, 0);
 
 // Address pattern
-buffer_write(osc_buf, buffer_string, addrpattern);
-while (buffer_tell(osc_buf) % 4 != 0) { // pad to next 4th byte
-    buffer_write(osc_buf, buffer_u8, $0);
+buffer_write(osc_send_buf, buffer_string, addrpattern);
+while (buffer_tell(osc_send_buf) % 4 != 0) { // pad to next 4th byte
+    buffer_write(osc_send_buf, buffer_u8, $0);
 }
 
 // Type-tag
-buffer_write(osc_buf, buffer_string, typetag);
-while (buffer_tell(osc_buf) % 4 != 0) { // pad to next 4th byte
-    buffer_write(osc_buf, buffer_u8, $0);
+buffer_write(osc_send_buf, buffer_string, typetag);
+while (buffer_tell(osc_send_buf) % 4 != 0) { // pad to next 4th byte
+    buffer_write(osc_send_buf, buffer_u8, $0);
 }
 
 // OSC arguments
@@ -97,9 +97,9 @@ for (i = 0; i < nargs; i += 1;) {
     var char = string_char_at(typetag, i + 2); // index from 1; skip comma
     switch (char) {
     case "s":
-        buffer_write(osc_buf, buffer_string, oscargs[i]);
-        while (buffer_tell(osc_buf) % 4 != 0) { // pad to next 4th byte
-            buffer_write(osc_buf, buffer_u8, $0);
+        buffer_write(osc_send_buf, buffer_string, oscargs[i]);
+        while (buffer_tell(osc_send_buf) % 4 != 0) { // pad to next 4th byte
+            buffer_write(osc_send_buf, buffer_u8, $0);
         }
         break;
     case "i":
@@ -115,14 +115,15 @@ for (i = 0; i < nargs; i += 1;) {
         buffer_write(buf_tmp, buffer_s32, oscargs[i]);
         for (j = 3; j >= 0; j -= 1) {
             var byte = buffer_peek(buf_tmp, j, buffer_u8);
-            buffer_write(osc_buf, buffer_u8, byte);
+            buffer_write(osc_send_buf, buffer_u8, byte);
         }
         break;
     }
 }
 
 // Send off the formatted packet
-network_send_udp_raw(osc_socket, osc_url, osc_port, osc_buf, buffer_tell(osc_buf));
+network_send_udp_raw(osc_send_socket, osc_send_url, osc_send_port, osc_send_buf,
+    buffer_tell(osc_send_buf));
 
 // Clean up
 buffer_delete(buf_tmp);
